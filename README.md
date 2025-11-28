@@ -1,9 +1,22 @@
 # reader3
 
-A lightweight, self-hosted EPUB reader with a built-in **AI chat window**.  
+A lightweight, self-hosted EPUB reader with a built-in **AI chat window**. 
 Read any EPUB one chapter at a time, and ask a local LLM (Ollama) or the OpenAI API questions about the **current chapter**—no copy/paste required.
 
 Inspired by Karpathy’s idea of “reading books with LLMs” can be found in this repository "karpath/reader3".  this project is intentionally simple, hackable, and easy to modify with the help of any LLM.
+
+### Final UI
+Below is how the reader appears with integrated chat window.. <br>
+
+
+Response with questions in the chapter...<br>
+<img src="reader3_chat_1.png" width="600">
+
+
+
+Response with questions not in the chapter..<br>
+<img src="reader3_chat_2.png" width="600">
+
 
 ---
 
@@ -50,7 +63,3 @@ Create a `.env` file in your project folder with below line defining your open a
 OPENAI_API_KEY=your_key_here
 ```
 If omitted, only local LLM model is available
-### 5. Final UI
-Below is how the reader appears with integrated chat window..
-![reader3 screenshot](reader3_chat_1.png)
-![reader3 screenshot](reader3_chat_2.png)
