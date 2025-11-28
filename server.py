@@ -3,12 +3,33 @@ import pickle
 from functools import lru_cache
 from typing import Optional
 
+
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from pydantic import BaseModel
+import httpx
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
+
+
 from reader3 import Book, BookMetadata, ChapterContent, TOCEntry
+
+class ChatRequest(BaseModel):
+    message: str
+    model: str   # "local" or "openai"
+    context: str = ""   # add context
+
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+#Prompt Template
+
+
+
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -103,6 +124,93 @@ async def serve_image(book_id: str, image_name: str):
         raise HTTPException(status_code=404, detail="Image not found")
 
     return FileResponse(img_path)
+
+@app.post("/api/chat")
+async def chat_endpoint(data: ChatRequest):
+    """
+    Simple chat endpoint that:
+    - Sends message to local LLM (Ollama) OR
+    - Sends message to OpenAI API
+    """
+    user_msg = data.message.strip()
+
+    if not user_msg:
+        return {"response": "(empty message)"}
+
+    # ---------------------------------------------------
+    # OPTION 1: Local LLM via Ollama
+    # ---------------------------------------------------
+    if data.model == "local":
+        try:
+            async with httpx.AsyncClient() as client:
+                r = await client.post(
+                    "http://localhost:11434/api/generate",
+                    json={
+                        "model": "llama3.1:8b",
+                        "prompt": f"""You are a reading assistant.
+
+                                You MUST answer ONLY using information from the book context below.
+                                If the user asks anything not supported by the context, reply with:
+                                "I don't see that information in this chapter."
+
+                                CONTEXT:
+                                {data.context}
+
+                                USER QUESTION:
+                                {user_msg}
+                                """
+                    }
+                )
+            out = r.json()
+            return {"response": out.get("response", "(no response)")}
+        except Exception as e:
+            return {"response": f"Local LLM error: {e}"}
+
+    # ---------------------------------------------------
+    # OPTION 2: OpenAI API
+    # ---------------------------------------------------
+    if data.model == "openai":
+        if not OPENAI_API_KEY:
+            return {"response": "Missing OPENAI_API_KEY environment variable."}
+
+        try:
+            async with httpx.AsyncClient() as client:
+                r = await client.post(
+                    "https://api.openai.com/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {OPENAI_API_KEY}"
+                    },
+                    json={
+                        "model": "gpt-4o-mini",
+                        "messages": [
+                            {
+                                "role": "system",
+                                "content": (
+                                    "You are a reading assistant. You MUST answer ONLY using the context text. "
+                                    "If something is not in the context, say: 'I don't see that information in this chapter.'"
+                                )
+                            },
+                            {
+                                "role": "system",
+                                "content": f"CONTEXT:\n{data.context}"
+                            },
+                            {
+                                "role": "user",
+                                "content": f"{user_msg}"
+                            }
+                        ]
+                    }
+                )
+
+            out = r.json()
+            answer = out["choices"][0]["message"]["content"]
+            return {"response": answer}
+
+        except Exception as e:
+            return {"response": f"OpenAI error: {e}"}
+
+    return {"response": "Invalid model type. Use 'local' or 'openai'."}
+
 
 if __name__ == "__main__":
     import uvicorn
