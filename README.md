@@ -1,27 +1,56 @@
-# reader 3
+# reader3
 
-![reader3](reader3.png)
+A lightweight, self-hosted EPUB reader with a built-in **AI chat window**.  
+Read any EPUB one chapter at a time, and ask a local LLM (Ollama) or the OpenAI API questions about the **current chapter**—no copy/paste required.
 
-A lightweight, self-hosted EPUB reader that lets you read through EPUB books one chapter at a time. This makes it very easy to copy paste the contents of a chapter to an LLM, to read along. Basically - get epub books (e.g. [Project Gutenberg](https://www.gutenberg.org/) has many), open them up in this reader, copy paste text around to your favorite LLM, and read together and along.
+Inspired by Karpathy’s idea of “reading books with LLMs” can be found in this repository "karpath/reader3".  this project is intentionally simple, hackable, and easy to modify with the help of any LLM.
 
-This project was 90% vibe coded just to illustrate how one can very easily [read books together with LLMs](https://x.com/karpathy/status/1990577951671509438). I'm not going to support it in any way, it's provided here as is for other people's inspiration and I don't intend to improve it. Code is ephemeral now and libraries are over, ask your LLM to change it in whatever way you like.
+---
+
+## Features
+
+- 📖 Clean, chapter-based EPUB reader  
+- 💬 Integrated **chat window** on the right  
+- 🤖 Supports **local LLMs (Ollama)** or **OpenAI GPT models**  
+- 📘 Automatically sends the **current chapter text** as context  
+- 🔒 LLM is **restricted to chapter content only**  
+- 🧹 `.env` support with `python-dotenv`  
+- 🗂️ Simple library system (`*_data` folders)
+
+---
 
 ## Usage
 
-The project uses [uv](https://docs.astral.sh/uv/). So for example, download [Dracula EPUB3](https://www.gutenberg.org/ebooks/345) to this directory as `dracula.epub`, then:
-
+### 1. Install dependencies
+Install all the required dependencies of the file
 ```bash
-uv run reader3.py dracula.epub
+pip install -r requirements.txt
 ```
-
-This creates the directory `dracula_data`, which registers the book to your local library. We can then run the server:
-
+### 2. Process an EPUB
+Download an EPUB (e.g., Dracula from Project Gutenberg) and process it. Place this file in the project folder
 ```bash
-uv run server.py
+python reader3.py dracula.epub
 ```
-
-And visit [localhost:8123](http://localhost:8123/) to see your current Library. You can easily add more books, or delete them from your library by deleting the folder. It's not supposed to be complicated or complex.
-
-## License
-
-MIT
+This creates a folder:
+```bash
+dracula_data/
+  ├── book.pkl
+  └── images/
+```
+Each `*_data` folder becomes a book in your library. 
+### 3. Run the server
+```bash
+python server.py
+```
+visit: http://localhost:8123/
+You'll see local libary and can open any book
+### 4. Enable OpenAI
+Create a `.env` file in your project folder with below line defining your open ai key. 
+```
+OPENAI_API_KEY=your_key_here
+```
+If omitted, only local LLM model is available
+### 5. Final UI
+Below is how the reader appears with integrated chat window..
+![reader3 screenshot](reader3_chat_1.png)
+![reader3 screenshot](reader3_chat_2.png)
