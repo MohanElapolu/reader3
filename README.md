@@ -10,12 +10,12 @@ Below is how the reader appears with integrated chat window.. <br>
 
 
 Response with questions in the chapter...<br>
-<img src="reader3_chat_1.png" width="600">
+<img src="reader3_chat_1.png" width="400" height="350">
 
 
 
 Response with questions not in the chapter..<br>
-<img src="reader3_chat_2.png" width="600">
+<img src="reader3_chat_2.png" width="400" height="350">
 
 
 ---
