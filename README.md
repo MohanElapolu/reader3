@@ -8,7 +8,6 @@ Inspired by Karpathy’s idea of “reading books with LLMs” can be found in t
 ### Final UI
 Below is how the reader appears with integrated chat window.. <br>
 
-
 Response with questions in the chapter...<br>
 <img src="reader3_chat_1.png" width="400" height="350">
 
