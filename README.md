@@ -29,7 +29,7 @@ Response with questions not in the chapter..<br>
 - 🧹 `.env` support with `python-dotenv`  
 - 🗂️ Simple library system (`*_data` folders)
 
----
+--------
 
 ## Usage
 
