@@ -6,14 +6,14 @@ Read any EPUB one chapter at a time, and ask a local LLM (Ollama) or the OpenAI 
 Inspired by Karpathy’s idea of “reading books with LLMs” can be found in this repository "karpath/reader3".  This project is intentionally simple, hackable, and easy to modify with the help of any LLM.
 
 ### Final UI
-Below is how the reader appears with integrated chat window.. <br>
+Below is how the reader appears with integrated chat window....<br>
 
-Response with questions in the chapter...<br>
+Response with questions in the chapter.....<br>
 <img src="reader3_chat_1.png" width="400" height="350">
 
 
 
-Response with questions not in the chapter..<br>
+Response with questions not in the chapter....<br>
 <img src="reader3_chat_2.png" width="400" height="350">
 
 
